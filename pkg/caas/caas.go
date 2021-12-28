@@ -11,10 +11,6 @@ import (
 	"github.com/zawachte/caas-rest-api/pkg/caasdb"
 )
 
-type GetClusterFindByAccountIdParams struct {
-	AccountId string
-}
-
 type CaasServer struct {
 	caasdbClient *caasdb.Client
 }
@@ -27,24 +23,6 @@ func NewCaasServer() (*CaasServer, error) {
 	}
 
 	return &CaasServer{dbClient}, err
-}
-
-type Cluster struct {
-	Id           string
-	Text         string
-	Tags         []string
-	CreationDate string
-	AccountId    string
-	Kubeconfig   string
-}
-
-type Account struct {
-	Id           string
-	Username     string
-	Password     string
-	Email        string
-	CreationDate string
-	Tags         []string
 }
 
 func (cs *CaasServer) GetAccount(c *gin.Context) {
@@ -101,7 +79,7 @@ func (cs *CaasServer) PostCluster(c *gin.Context) {
 func (cs *CaasServer) postCluster(cluster Cluster) error {
 	var lastInsertID int
 
-	i64, err := strconv.ParseInt(cluster.AccountId, 10, 32)
+	i64, err := strconv.ParseInt(*cluster.AccountId, 10, 32)
 	if err != nil {
 		return err
 	}
