@@ -1,0 +1,177 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: ClusterAPI As a Service
+  description: Give a Cluster, Get a Cluster
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Zachary Wachtel
+    email: zawachte@gmail.com
+    url: https://www.zachwachtel.com/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://localhost/api
+paths:
+  /cluster:
+    get:
+      summary: Returns a list of all clusters
+      responses:
+        '200':
+          description: A JSON array of cluster IDs
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Cluster'
+    post:
+      summary: Create a cluster
+      requestBody:
+        description: Cluster to be added to the store
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                due:
+                  type: string
+                  format: date-time
+      responses:
+          '200':
+            description: ID of created cluster
+            content:
+              application/json:
+                schema:
+                  type: integer
+  /cluster/{id}:
+    get:
+      summary: Get cluster with specific id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      responses:
+        '200':
+          description: Cluster with given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cluster'
+    delete:
+      summary: Delete cluster with specific id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      responses:
+        '200':
+          description: Cluster with given id deleted
+          content: {}
+  /cluster/findByAccountId:
+    get:
+      summary: "Finds Cluster by accountId"
+      description: "Multiple status values can be provided with comma separated strings"
+      parameters:
+      - name: "accountId"
+        in: "query"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A JSON array of cluster IDs
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Cluster'
+        "400":
+          description: "Invalid status value"
+  /account:
+    get:
+      summary: Returns a list of all accounts
+      responses:
+        '200':
+          description: A JSON array of cluster IDs
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Account'
+    post:
+      summary: Create an account
+      requestBody:
+        description: Account to be added to the store
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                due:
+                  type: string
+                  format: date-time
+      responses:
+          '200':
+            description: ID of created account
+            content:
+              application/json:
+                schema:
+                  type: integer 
+components:
+  schemas:
+    Cluster:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        creationDate:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        kubeconfig:
+          type: string
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        creationDate:
+          type: string
+          format: date-time
